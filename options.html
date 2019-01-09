@@ -1,0 +1,423 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Configuration Options &#8212; yarnspawner 0+untagged.22.g96f5d85 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="yarnspawner" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration-options">
+<h1>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="yarnspawner.YarnSpawner">
+<em class="property">class </em><code class="descclassname">yarnspawner.</code><code class="descname">YarnSpawner</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#yarnspawner.YarnSpawner" title="Permalink to this definition">¶</a></dt>
+<dd><p>A spawner for starting singleuser instances in a YARN container.</p>
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.args = List()</code></dt>
+<dd><p>Extra arguments to be passed to the single-user server.</p>
+<p>Some spawners allow shell-style expansion here, allowing you to use environment variables here.
+Most, including the default, do not. Consult the documentation for your spawner to verify!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.cmd = Command()</code></dt>
+<dd><p>The command used for starting the singleuser server.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.consecutive_failure_limit = Int(0)</code></dt>
+<dd><p>Maximum number of consecutive failures to allow before
+shutting down JupyterHub.</p>
+<p>This helps JupyterHub recover from a certain class of problem preventing launch
+in contexts where the Hub is automatically restarted (e.g. systemd, docker, kubernetes).</p>
+<p>A limit of 0 means no limit and consecutive failures will not be tracked.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.cpu_guarantee = Float(None)</code></dt>
+<dd><p>Minimum number of cpu-cores a single-user notebook server is guaranteed to have available.</p>
+<p>If this value is set to 0.5, allows use of 50% of one CPU.
+If this value is set to 2, allows use of up to 2 CPUs.</p>
+<p><strong>This is a configuration setting. Your spawner must implement support
+for the limit to work.</strong> The default spawner, <cite>LocalProcessSpawner</cite>,
+does <strong>not</strong> implement this support. A custom spawner <strong>must</strong> add
+support for this setting for it to be enforced.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.cpu_limit = Int(1)</code></dt>
+<dd><p>Maximum number of cpu-cores a singleuser notebook server is allowed to
+use. Unlike other spawners, this must be an integer amount &gt;= 1.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.debug = Bool(False)</code></dt>
+<dd><p>Enable debug-logging of the single-user server</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.default_url = Unicode('')</code></dt>
+<dd><p>The URL the single-user server should start in.</p>
+<p><cite>{username}</cite> will be expanded to the user’s username</p>
+<p>Example uses:</p>
+<ul class="simple">
+<li>You can set <cite>notebook_dir</cite> to <cite>/</cite> and <cite>default_url</cite> to <cite>/tree/home/{username}</cite> to allow people to
+navigate the whole filesystem from their notebook server, but still start in their home directory.</li>
+<li>Start with <cite>/notebooks</cite> instead of <cite>/tree</cite> if <cite>default_url</cite> points to a notebook instead of a directory.</li>
+<li>You can set this to <cite>/lab</cite> to have JupyterLab start by default, rather than Jupyter Notebook.</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.disable_user_config = Bool(False)</code></dt>
+<dd><p>Disable per-user configuration of single-user servers.</p>
+<p>When starting the user’s single-user server, any config file found in the user’s $HOME directory
+will be ignored.</p>
+<p>Note: a user could circumvent this if the user modifies their Python environment, such as when
+they have their own conda environments / virtualenvs / containers.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.env_keep = List()</code></dt>
+<dd><p>Whitelist of environment variables for the single-user server to inherit from the JupyterHub process.</p>
+<p>This whitelist is used to ensure that sensitive information in the JupyterHub process’s environment
+(such as <cite>CONFIGPROXY_AUTH_TOKEN</cite>) is not passed to the single-user server’s process.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.environment = Dict()</code></dt>
+<dd><p>Extra environment variables to set for the single-user server’s process.</p>
+<dl class="docutils">
+<dt>Environment variables that end up in the single-user server’s process come from 3 sources:</dt>
+<dd><ul class="first last simple">
+<li>This <cite>environment</cite> configurable</li>
+<li>The JupyterHub process’ environment variables that are whitelisted in <cite>env_keep</cite></li>
+<li>Variables to establish contact between the single-user notebook and the hub (such as JUPYTERHUB_API_TOKEN)</li>
+</ul>
+</dd>
+</dl>
+<p>The <cite>environment</cite> configurable should be set by JupyterHub administrators to add
+installation specific environment variables. It is a dict where the key is the name of the environment
+variable, and the value can be a string or a callable. If it is a callable, it will be called
+with one parameter (the spawner instance), and should return a string fairly quickly (no blocking
+operations please!).</p>
+<p>Note that the spawner class’ interface is not guaranteed to be exactly same across upgrades,
+so if you are using the callable take care to verify it continues to work after upgrades!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.epilogue = Unicode('')</code></dt>
+<dd><p>Script to run after singleuser server ends.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.http_timeout = Int(30)</code></dt>
+<dd><p>Timeout (in seconds) before giving up on a spawned HTTP server</p>
+<p>Once a server has successfully been spawned, this is the amount of time
+we wait before assuming that the server is unable to accept
+connections.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.ip = Unicode('0.0.0.0')</code></dt>
+<dd><p>The IP address (or hostname) the singleuser server should listen on.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.keytab = Unicode(None)</code></dt>
+<dd><p>Path to kerberos keytab for JupyterHub user</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.localize_files = Dict()</code></dt>
+<dd><p>Extra files to distribute to the singleuser server container.</p>
+<p>This is a mapping from <code class="docutils literal notranslate"><span class="pre">local-name</span></code> to <code class="docutils literal notranslate"><span class="pre">resource-path</span></code>. Resource
+paths can be local, or in HDFS (prefix with <code class="docutils literal notranslate"><span class="pre">hdfs://...</span></code> if so). If
+an archive (<code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.zip</span></code>), the resource will be unarchived
+as directory <code class="docutils literal notranslate"><span class="pre">local-name</span></code>.</p>
+<p>This can be used to distribute conda/virtual environments by
+configuring the following:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">YarnSpawner</span><span class="o">.</span><span class="n">localize_files</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;environment&#39;</span><span class="p">:</span> <span class="s1">&#39;/path/to/archived/environment.tar.gz&#39;</span>
+<span class="p">}</span>
+<span class="n">c</span><span class="o">.</span><span class="n">YarnSpawner</span><span class="o">.</span><span class="n">prologue</span> <span class="o">=</span> <span class="s1">&#39;source environment/bin/activate&#39;</span>
+</pre></div>
+</div>
+<p>These archives are usually created using either <code class="docutils literal notranslate"><span class="pre">conda-pack</span></code> or
+<code class="docutils literal notranslate"><span class="pre">venv-pack</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.mem_guarantee = ByteSpecification(None)</code></dt>
+<dd><p>Minimum number of bytes a single-user notebook server is guaranteed to have available.</p>
+<dl class="docutils">
+<dt>Allows the following suffixes:</dt>
+<dd><ul class="first last simple">
+<li>K -&gt; Kilobytes</li>
+<li>M -&gt; Megabytes</li>
+<li>G -&gt; Gigabytes</li>
+<li>T -&gt; Terabytes</li>
+</ul>
+</dd>
+</dl>
+<p><strong>This is a configuration setting. Your spawner must implement support
+for the limit to work.</strong> The default spawner, <cite>LocalProcessSpawner</cite>,
+does <strong>not</strong> implement this support. A custom spawner <strong>must</strong> add
+support for this setting for it to be enforced.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.mem_limit = ByteSpecification('2 G')</code></dt>
+<dd><p>Maximum number of bytes a singleuser notebook server is allowed to
+use. Allows the following suffixes:</p>
+<ul class="simple">
+<li>K -&gt; Kibibytes</li>
+<li>M -&gt; Mebibytes</li>
+<li>G -&gt; Gibibytes</li>
+<li>T -&gt; Tebibytes</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.notebook_dir = Unicode('')</code></dt>
+<dd><p>Path to the notebook directory for the single-user server.</p>
+<p>The user sees a file listing of this directory when the notebook interface is started. The
+current interface does not easily allow browsing beyond the subdirectories in this directory’s
+tree.</p>
+<p><cite>~</cite> will be expanded to the home directory of the user, and {username} will be replaced
+with the name of the user.</p>
+<p>Note that this does <em>not</em> prevent users from accessing files outside of this path! They
+can do so with many other means.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.options_form = Union()</code></dt>
+<dd><p>An HTML form for options a user can specify on launching their server.</p>
+<p>The surrounding <cite>&lt;form&gt;</cite> element and the submit button are already provided.</p>
+<p>For example:</p>
+<div class="code html highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Set</span> <span class="n">your</span> <span class="n">key</span><span class="p">:</span>
+<span class="o">&lt;</span><span class="nb">input</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;key&quot;</span> <span class="n">val</span><span class="o">=</span><span class="s2">&quot;default_key&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">input</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="n">Choose</span> <span class="n">a</span> <span class="n">letter</span><span class="p">:</span>
+<span class="o">&lt;</span><span class="n">select</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;letter&quot;</span> <span class="n">multiple</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="o">&gt;</span><span class="n">The</span> <span class="n">letter</span> <span class="n">A</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="o">&gt;</span><span class="n">The</span> <span class="n">letter</span> <span class="n">B</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">select</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The data from this form submission will be passed on to your spawner in <cite>self.user_options</cite></p>
+<p>Instead of a form snippet string, this could also be a callable that takes as one
+parameter the current spawner instance and returns a string. The callable will
+be called asynchronously if it returns a future, rather than a str. Note that
+the interface of the spawner class is not deemed stable across versions,
+so using this functionality might cause your JupyterHub upgrades to break.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.poll_interval = Int(30)</code></dt>
+<dd><p>Interval (in seconds) on which to poll the spawner for single-user server’s status.</p>
+<p>At every poll interval, each spawner’s <cite>.poll</cite> method is called, which checks
+if the single-user server is still running. If it isn’t running, then JupyterHub modifies
+its own state accordingly and removes appropriate routes from the configurable proxy.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.port = Int(0)</code></dt>
+<dd><p>The port for single-user servers to listen on.</p>
+<p>Defaults to <cite>0</cite>, which uses a randomly allocated port number each time.</p>
+<p>If set to a non-zero value, all Spawners will use the same port,
+which only makes sense if each server is on a different address,
+e.g. in containers.</p>
+<p>New in version 0.7.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.post_stop_hook = Any(None)</code></dt>
+<dd><p>An optional hook function that you can implement to do work after
+the spawner stops.</p>
+<p>This can be set independent of any concrete spawner implementation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.pre_spawn_hook = Any(None)</code></dt>
+<dd><p>An optional hook function that you can implement to do some bootstrapping work before
+the spawner starts. For example, create a directory for your user or load initial content.</p>
+<p>This can be set independent of any concrete spawner implementation.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">check_call</span>
+<span class="k">def</span> <span class="nf">my_hook</span><span class="p">(</span><span class="n">spawner</span><span class="p">):</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">spawner</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;./examples/bootstrap-script/bootstrap.sh&#39;</span><span class="p">,</span> <span class="n">username</span><span class="p">])</span>
+
+<span class="n">c</span><span class="o">.</span><span class="n">Spawner</span><span class="o">.</span><span class="n">pre_spawn_hook</span> <span class="o">=</span> <span class="n">my_hook</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.principal = Unicode(None)</code></dt>
+<dd><p>Kerberos principal for JupyterHub user</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.prologue = Unicode('')</code></dt>
+<dd><p>Script to run before singleuser server starts.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.queue = Unicode('default')</code></dt>
+<dd><p>The YARN queue to submit applications under</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.script_template = Unicode('{prologue}n{singleuser_command}n{epilogue}')</code></dt>
+<dd><p>Template for application script.</p>
+<p>Filled in by calling <code class="docutils literal notranslate"><span class="pre">script_template.format(**variables)</span></code>. Variables
+include the following attributes of this class:</p>
+<ul class="simple">
+<li>prologue</li>
+<li>singleuser_command</li>
+<li>epilogue</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">config c.YarnSpawner.start_timeout = Int(300)</code></dt>
+<dd><p>Timeout (in seconds) before giving up on starting of singleuser server.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">yarnspawner</a></h1>
+
+
+
+<p class="blurb">A JupyterHub Spawner for deploying on Apache Hadoop/YARN</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jcrist&repo=yarnspawner&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jcrist/yarnspawner">
+    <img
+        alt="https://secure.travis-ci.org/jcrist/yarnspawner.svg?branch=master"
+        src="https://secure.travis-ci.org/jcrist/yarnspawner.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration Options</a></li>
+</ul>
+
+<h3>Need help?</h3>
+
+<p>
+  Open an issue in the <a href="https://github.com/jcrist/skein/issues">issue tracker</a>.
+</p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jim Crist.
+      
+      |
+      <a href="_sources/options.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
