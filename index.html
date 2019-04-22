@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>yarnspawner &#8212; yarnspawner 0.2.0+1.gfb5de0f documentation</title>
+    <title>yarnspawner &#8212; yarnspawner 0.2.0+2.gd88b61a documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -49,11 +49,12 @@ Hadoop/YARN clusters.</p>
 <li><p><a class="reference internal" href="#using-an-archived-environment" id="id8">Using an Archived Environment</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#additional-configuration-options" id="id9">Additional Configuration Options</a></p></li>
-<li><p><a class="reference internal" href="#example" id="id10">Example</a></p></li>
+<li><p><a class="reference internal" href="#usage-with-jupyterlab" id="id9">Usage with JupyterLab</a></p></li>
+<li><p><a class="reference internal" href="#additional-configuration-options" id="id10">Additional Configuration Options</a></p></li>
+<li><p><a class="reference internal" href="#example" id="id11">Example</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#additional-resources" id="id11">Additional Resources</a></p></li>
+<li><p><a class="reference internal" href="#additional-resources" id="id12">Additional Resources</a></p></li>
 </ul>
 </div>
 <div class="section" id="installation">
@@ -297,8 +298,43 @@ of moving the environments around).</p>
 <p>For more information, see the <a class="reference external" href="https://jcrist.github.io/skein/distributing-files.html">Skein documentation on distributing files</a>.</p>
 </div>
 </div>
+<div class="section" id="usage-with-jupyterlab">
+<h3><a class="toc-backref" href="#id9">Usage with JupyterLab</a><a class="headerlink" href="#usage-with-jupyterlab" title="Permalink to this headline">¶</a></h3>
+<p>JupyterHub can use <a class="reference external" href="https://jupyterlab.readthedocs.io/">JupyterLab</a> as the frontend instead of the classic notebook
+interface. To do this, take the following steps:</p>
+<ol class="arabic">
+<li><p>Install JupyterLab into the notebook (not the JupyterHub) environment.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install using conda</span>
+conda install -c conda-forge jupyterlab
+
+<span class="c1"># Or install with pip</span>
+pip install jupyterlab
+</pre></div>
+</div>
+</li>
+<li><p>Install the JupyterLab Hub extension into the notebook (not the JupyterHub)
+environment. This isn’t strictly necessary, but adds a JupyterHub control
+panel to the JupyterLab UI allowing easier login/logout.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>jupyter labextension install @jupyterlab/hub-extension
+</pre></div>
+</div>
+</li>
+<li><p>Configure JupyterHub to use JupyterLab instead.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start users in JupyterLab by default</span>
+<span class="n">c</span><span class="o">.</span><span class="n">YarnSpawner</span><span class="o">.</span><span class="n">default_url</span> <span class="o">=</span> <span class="s1">&#39;/lab&#39;</span>
+
+<span class="c1"># Start JupyterLab with the hub extension (only required if you</span>
+<span class="c1"># installed the JupyterLab Hub extension above)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">YarnSpawner</span><span class="o">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;python -m yarnspawner.jupyter_labhub&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>For more information see <a class="reference external" href="https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html">JupyterLab on JupyterHub</a> and <a class="reference external" href="https://jupyterlab.readthedocs.io/en/stable/user/jupyterhub.html">JupyterLab Hub
+Extension</a> documentation.</p>
+</div>
 <div class="section" id="additional-configuration-options">
-<h3><a class="toc-backref" href="#id9">Additional Configuration Options</a><a class="headerlink" href="#additional-configuration-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">Additional Configuration Options</a><a class="headerlink" href="#additional-configuration-options" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">YarnSpawner</span></code> has several additional configuration fields. See <a class="reference internal" href="options.html"><span class="doc">Configuration Options</span></a>
 for documentation on all available options. At a minimum you’ll probably want
 to configure the memory and cpu limits, as well as which YARN queue to use.</p>
@@ -314,7 +350,7 @@ to configure the memory and cpu limits, as well as which YARN queue to use.</p>
 </div>
 </div>
 <div class="section" id="example">
-<h3><a class="toc-backref" href="#id10">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>In summary, an example <code class="docutils literal notranslate"><span class="pre">jupyterhub_config.py</span></code> configuration enabling
 <code class="docutils literal notranslate"><span class="pre">yarnspawner</span></code> might look like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable yarnspawner</span>
@@ -344,7 +380,7 @@ to configure the memory and cpu limits, as well as which YARN queue to use.</p>
 </div>
 </div>
 <div class="section" id="additional-resources">
-<h2><a class="toc-backref" href="#id11">Additional Resources</a><a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12">Additional Resources</a><a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
 <p>If you’re interested in <code class="docutils literal notranslate"><span class="pre">yarnspawner</span></code>, you may also be interested in a few
 other libraries:</p>
 <ul class="simple">
