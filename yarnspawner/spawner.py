@@ -108,6 +108,15 @@ class YarnSpawner(Spawner):
         """,
         config=True)
 
+    gpu_limit = Integer(
+        0,
+        min=0,
+        help="""
+            Maximum number of gpu-cores a singleuser notebook server is allowed to
+            use. Unlike other spawners, this must be an integer amount >= 0.
+            """,
+        config=True)
+
     epilogue = Unicode(
         '',
         help='Script to run after singleuser server ends.',
@@ -162,7 +171,8 @@ class YarnSpawner(Spawner):
 
         resources = skein.Resources(
             memory='%d b' % self.mem_limit,
-            vcores=self.cpu_limit
+            vcores=self.cpu_limit,
+            gpus=self.gpu_limit
         )
 
         security = skein.Security.new_credentials()
